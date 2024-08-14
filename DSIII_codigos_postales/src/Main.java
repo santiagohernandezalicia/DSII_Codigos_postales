@@ -2,8 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Map;
-import java.util.TreeMap;
+
 public class Main {
     public static void main(String[] args) {
         try {
@@ -11,39 +10,31 @@ public class Main {
             BufferedReader archivoLogico = new BufferedReader(archivoFisico);
 
             String registro;
-            String campos[];
-
-            Map<String, Integer> conteoUrbanos = new TreeMap<>();
-            Map<String, Integer> conteoRurales = new TreeMap<>();
+            int cntUrbano = 0;
+            int cntRural = 0;
+            archivoLogico.readLine();
+            String[] campos;
 
             while ((registro = archivoLogico.readLine()) != null) {
                 campos = registro.split(",");
-                if (campos.length > 2) {
-                    String codigoPostal = campos[0];
-                    String tipoAsentamiento = campos[2];
 
-                    if (tipoAsentamiento.equalsIgnoreCase("Urbano")) {
-                        conteoUrbanos.put(codigoPostal, conteoUrbanos.getOrDefault(codigoPostal, 0) + 1);
-                    } else if (tipoAsentamiento.equalsIgnoreCase("Rural")) {
-                        conteoRurales.put(codigoPostal, conteoRurales.getOrDefault(codigoPostal, 0) + 1);
-                    }
+                String tipo = campos[2].trim();
+
+                if (tipo.equalsIgnoreCase("Urbano")) {
+                    cntUrbano++;
+                } else if (tipo.equalsIgnoreCase("Rural")) {
+                    cntRural++;
                 }
             }
-
-            System.out.println("Código Postal | Asentamientos Urbanos | Asentamientos Rurales");
-            for (String codigoPostal : conteoUrbanos.keySet()) {
-                int urbanos = conteoUrbanos.getOrDefault(codigoPostal, 0);
-                int rurales = conteoRurales.getOrDefault(codigoPostal, 0);
-                System.out.println(" " + codigoPostal + "             " + urbanos + "                  " + rurales);
-            }
-
+            System.out.println("Total de asentamientos urbanos: " + cntUrbano);
+            System.out.println("Total de asentamientos rurales: " + cntRural);
             archivoLogico.close();
             archivoFisico.close();
 
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Archivo no encontrado: " + e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error al leer el archivo: " + e.getMessage());
         }
     }
 }
